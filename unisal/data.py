@@ -1119,7 +1119,6 @@ class FolderVideoDataset(Dataset):
         self.frame_files = frame_files
         self.vid_nr_array = [0]
         self.n_images_dict = {0: len(frame_files)}
-
         img = cv2.imread(str(frame_files[0]))
         img_size = tuple(img.shape[:2])
         self.target_size_dict = {0: img_size}

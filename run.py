@@ -92,14 +92,17 @@ def predict_examples(train_id=None):
             predictions_from_folder(
                 example_folder, is_video, train_id=train_id, source=source)
 
-
 def predict_over_frames(train_id=None):
-    for video_folder in (Path("/content/googleBucketFolder/input/dhf1k/frames/")).glob("*"):
+    trainer = load_trainer(train_id)
+    trainer.model.load_best_weights(trainer.train_dir)
+    source = 'DHF1K'
+    for video_folder in (Path("/home/jupyter/googleBucketFolder/input/dhf1k/frames/")).glob("*"):
         if not video_folder.is_dir():
             continue
-        source = 'DHF1K'
-        predictions_from_folder(video_folder, True, train_id=train_id, source=source)
-        break
+        print('Starting', str(video_folder))
+        folder_path = Path(video_folder).resolve()
+        trainer.generate_predictions_from_path(folder_path, is_video=True, source=source, load_weights=False)
+        print('Finished', str(video_folder))
 
 if __name__ == "__main__":
     fire.Fire()

@@ -860,7 +860,8 @@ class Trainer(utils.KwConfigClass):
                 print("No MIT1003 fine-tuned weights found.")
             source = 'SALICON'
 
-        images_path = folder_path / 'images'
+        #images_path = folder_path / 'images'
+        images_path = folder_path
         torch.cuda.empty_cache()
 
         if load_weights:
@@ -880,7 +881,7 @@ class Trainer(utils.KwConfigClass):
                 dataset = data.FolderVideoDataset(
                     images_path, source=source, frame_modulo=frame_modulo)
                 #pred_dir = folder_path / 'saliency'
-                pred_dir = Path('/content/googleBucketFolder/input/dhf1k/salpreds/' + str(folder_path).split('/')[-1])            
+                pred_dir = Path('/home/jupyter/googleBucketFolder/input/dhf1k/salpreds/' + str(folder_path).split('/')[-1])            
                 pred_dir.mkdir(exist_ok=True)
 
                 pred_seq = self.run_inference(
