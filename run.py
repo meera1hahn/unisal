@@ -93,5 +93,13 @@ def predict_examples(train_id=None):
                 example_folder, is_video, train_id=train_id, source=source)
 
 
+def predict_over_frames(train_id=None):
+    for video_folder in (Path("/content/googleBucketFolder/input/dhf1k/frames/")).glob("*"):
+        if not video_folder.is_dir():
+            continue
+        source = 'DHF1K'
+        predictions_from_folder(video_folder, True, train_id=train_id, source=source)
+        break
+
 if __name__ == "__main__":
     fire.Fire()

@@ -16,7 +16,7 @@ import math
 import torch
 import torch.nn.functional as F
 import cv2
-from tensorboardX import SummaryWriter
+#from tensorboardX import SummaryWriter
 import numpy as np
 
 from . import salience_metrics
@@ -539,7 +539,7 @@ class Trainer(utils.KwConfigClass):
             # Keep the training targets if scores are to be computed
             if metrics is not None:
                 sal_seq[:, frame_idx_array, :, :, :] = this_sal_seq
-                fix_seq[:, frame_idx_array, :, :, :] = this_fix_seq
+                fix_seq[:, frame_idx_array, :, :, :] = this_fix_seq.type(torch.uint8)
 
         # Assert non-empty predictions
         assert(torch.min(pred_seq.exp().sum(-1).sum(-1)) > 0)
@@ -628,6 +628,7 @@ class Trainer(utils.KwConfigClass):
                         else:
                             this_this_map = dataset.get_seq(
                                 vid_nr, [frame_nr], 'fix').numpy()[0, 0, ...]
+                        this_this_map = this_this_map.astype('float64')
                         this_this_map = cv2.resize(
                             this_this_map, tuple(target_size[::-1]),
                             cv2.INTER_NEAREST
@@ -878,7 +879,8 @@ class Trainer(utils.KwConfigClass):
                 frame_modulo = 5 if source == 'DHF1K' else 4
                 dataset = data.FolderVideoDataset(
                     images_path, source=source, frame_modulo=frame_modulo)
-                pred_dir = folder_path / 'saliency'
+                #pred_dir = folder_path / 'saliency'
+                pred_dir = Path('/content/googleBucketFolder/input/dhf1k/salpreds/' + str(folder_path).split('/')[-1])            
                 pred_dir.mkdir(exist_ok=True)
 
                 pred_seq = self.run_inference(
