@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-
+from tqdm import tqdm
 import fire
 
 import unisal
@@ -96,13 +96,20 @@ def predict_over_frames(train_id=None):
     trainer = load_trainer(train_id)
     trainer.model.load_best_weights(trainer.train_dir)
     source = 'DHF1K'
-    for video_folder in (Path("/home/jupyter/googleBucketFolder/input/dhf1k/frames/")).glob("*"):
-        if not video_folder.is_dir():
-            continue
-        print('Starting', str(video_folder))
-        folder_path = Path(video_folder).resolve()
-        trainer.generate_predictions_from_path(folder_path, is_video=True, source=source, load_weights=False)
-        print('Finished', str(video_folder))
+    num_videos = len(os.listdir("/home/jupyter/googleBucketFolder/input/dhf1k/frames/"))
+    with tqdm(total=num_videos) as pbar:
+        for video_folder in Path("/home/jupyter/googleBucketFolder/input/dhf1k/frames/").glob("*"):
+            if not video_folder.is_dir():
+                continue
+            # print('Starting', str(video_folder))
+            folder_path = Path(video_folder).resolve()
+            try:
+                count = 2
+                #trainer.generate_predictions_from_path(folder_path, is_video=True, source=source, load_weights=False)
+            except:
+                print('error with video:', str(video_folder))
+            # print('Finished', str(video_folder))
+            pbar.update(1)
 
 if __name__ == "__main__":
     fire.Fire()
